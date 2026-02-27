@@ -77,14 +77,20 @@ public class AddAdminActivity extends AppCompatActivity {
                 });
     }
 
+    private String generateAdminId(String uid){
+        return "ADM_" + uid.substring(0,5).toUpperCase();
+    }
     private void saveAdminToDatabase(String uid,
-                                       String name,
-                                       String clgname,
-                                       String email,
-                                       String phone){
+                                     String name,
+                                     String clgname,
+                                     String email,
+                                     String phone){
 
-        // Teacher Data
+        String adminId = generateAdminId(uid); // 🔥 NEW
+
+        // Admin Data
         HashMap<String,Object> adminMap = new HashMap<>();
+        adminMap.put("adminId", adminId); // 🔥 NEW
         adminMap.put("name",name);
         adminMap.put("collegeName",clgname);
         adminMap.put("email",email);
@@ -97,6 +103,7 @@ public class AddAdminActivity extends AppCompatActivity {
         HashMap<String,Object> userMap = new HashMap<>();
         userMap.put("role","admin");
         userMap.put("email",email);
+        userMap.put("adminId", adminId); // 🔥 NEW
 
         usersRef.child(uid).setValue(userMap)
                 .addOnSuccessListener(unused -> {
@@ -104,7 +111,8 @@ public class AddAdminActivity extends AppCompatActivity {
                     FirebaseAuth.getInstance().signOut();
 
                     Toast.makeText(this,
-                            "Admin Created!\nDefault Password: "+DEFAULT_PASS,
+                            "Admin Created!\nID: " + adminId +
+                                    "\nPassword: "+DEFAULT_PASS,
                             Toast.LENGTH_LONG).show();
 
                     finish();
