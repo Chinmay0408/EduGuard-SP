@@ -20,7 +20,7 @@ public class AddAdminActivity extends AppCompatActivity {
     Button btnCreate;
 
     FirebaseAuth mAuth;
-    DatabaseReference usersRef, adminsRef;
+    DatabaseReference usersRef, superAdminRef; // 🔥 Updated to superAdminRef
 
     private final String DEFAULT_PASS = "admin@123"; // ⭐ default password
 
@@ -36,8 +36,11 @@ public class AddAdminActivity extends AppCompatActivity {
         btnCreate = findViewById(R.id.btnCreateTeacher);
 
         mAuth = FirebaseAuth.getInstance();
+
+        // References to your Realtime Database nodes
         usersRef = FirebaseDatabase.getInstance().getReference("Users");
-        adminsRef = FirebaseDatabase.getInstance().getReference("Admins");
+        // 🔥 Changed this to target the "Super Admin" collection/node
+        superAdminRef = FirebaseDatabase.getInstance().getReference("Super Admin");
 
         btnCreate.setOnClickListener(v -> createTeacher());
     }
@@ -69,7 +72,7 @@ public class AddAdminActivity extends AppCompatActivity {
 
                         saveAdminToDatabase(uid, name, clgname, email, phone);
 
-                    }else{
+                    } else {
                         Toast.makeText(this,
                                 "Error: "+task.getException().getMessage(),
                                 Toast.LENGTH_LONG).show();
@@ -80,30 +83,32 @@ public class AddAdminActivity extends AppCompatActivity {
     private String generateAdminId(String uid){
         return "ADM_" + uid.substring(0,5).toUpperCase();
     }
+
     private void saveAdminToDatabase(String uid,
                                      String name,
                                      String clgname,
                                      String email,
                                      String phone){
 
-        String adminId = generateAdminId(uid); // 🔥 NEW
+        String adminId = generateAdminId(uid);
 
-        // Admin Data
+        // Admin Data Map
         HashMap<String,Object> adminMap = new HashMap<>();
-        adminMap.put("adminId", adminId); // 🔥 NEW
+        adminMap.put("adminId", adminId);
         adminMap.put("name",name);
         adminMap.put("collegeName",clgname);
         adminMap.put("email",email);
         adminMap.put("phone",phone);
         adminMap.put("createdAt",System.currentTimeMillis());
 
-        adminsRef.child(uid).setValue(adminMap);
+        // 🔥 Saving the data to the "Super Admin" node using the generated UID
+        superAdminRef.child(uid).setValue(adminMap);
 
-        // Role Assignment
+        // Role Assignment (Saved in "Users" so your login system knows this UID belongs to an admin)
         HashMap<String,Object> userMap = new HashMap<>();
         userMap.put("role","admin");
         userMap.put("email",email);
-        userMap.put("adminId", adminId); // 🔥 NEW
+        userMap.put("adminId", adminId);
 
         usersRef.child(uid).setValue(userMap)
                 .addOnSuccessListener(unused -> {

@@ -30,19 +30,19 @@ public class SPSettingsFragment extends Fragment {
         cardProfile = view.findViewById(R.id.cardProfile);
         btnLogout = view.findViewById(R.id.btnLogout);
 
-        // 🔥 OPEN PROFILE
+        // 🔥 OPEN PROFILE ACTIVITY
         cardProfile.setOnClickListener(v -> {
 
-            startActivity(new Intent(
-                    getContext(),
-                    SPProfileActivity.class));
+            Intent intent = new Intent(requireActivity(),
+                    SPProfileActivity.class);
 
+            startActivity(intent);
         });
 
         // 🔥 LOGOUT
         btnLogout.setOnClickListener(v -> {
 
-            new AlertDialog.Builder(getContext())
+            new AlertDialog.Builder(requireActivity())
                     .setTitle("Logout")
                     .setMessage("Are you sure you want to logout?")
                     .setPositiveButton("Yes",(d,w)-> logoutAdmin())
@@ -56,20 +56,19 @@ public class SPSettingsFragment extends Fragment {
 
     private void logoutAdmin(){
 
-        // Clear admin session
-        SharedPreferences sp = getActivity()
+        // Clear SharedPreferences
+        SharedPreferences sp = requireActivity()
                 .getSharedPreferences("admin", 0);
 
         sp.edit().clear().apply();
 
-        // Firebase signout (safe even if admin is hardcoded)
+        // Firebase signout
         FirebaseAuth.getInstance().signOut();
 
-        Intent intent = new Intent(
-                getContext(),
+        Intent intent = new Intent(requireActivity(),
                 LoginActivity.class);
 
-        // 🚨 VERY IMPORTANT
+        // 🚨 Clear all activities
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 

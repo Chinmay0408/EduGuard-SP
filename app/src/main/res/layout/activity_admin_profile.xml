@@ -1,22 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:gravity="center"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#EEF2FF">
 
-    <TextView
-        android:text="SuperAdmin"
-        android:textSize="26sp"
-        android:textStyle="bold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
 
-    <TextView
-        android:text="superadmin12@gmail.com"
-        android:textColor="#6B7280"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        <!-- ===== TITLE ===== -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Super Admin Profile"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#111827"
+            android:gravity="center"/>
 
-</LinearLayout>
+        <!-- ===== BASIC INFO CARD ===== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/admin_info_bg">
+
+            <!-- 🔥 Admin Name -->
+            <TextView
+                android:id="@+id/tvAdminName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Jogindar"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"/>
+
+            <!-- 🔥 Admin Email -->
+            <TextView
+                android:id="@+id/tvAdminEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="superadmin12@gmail.com"
+                android:textSize="16sp"
+                android:textColor="#E0E7FF"
+                android:layout_marginTop="6dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Role: Super Administrator"
+                android:textSize="15sp"
+                android:textColor="#E0E7FF"
+                android:layout_marginTop="6dp"/>
+        </LinearLayout>
+
+        <!-- ===== SYSTEM STATISTICS TITLE ===== -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="System Statistics"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1F2937"
+            android:layout_marginTop="24dp"/>
+
+        <!-- ===== COLLEGES CARD ===== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:padding="20dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/stat_card_blue">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total Colleges"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"/>
+
+            <!-- 🔥 Colleges Count -->
+            <TextView
+                android:id="@+id/tvTotalColleges"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"/>
+        </LinearLayout>
+
+        <!-- ===== TEACHERS CARD ===== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:padding="20dp"
+            android:layout_marginTop="14dp"
+            android:background="@drawable/stat_card_green">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total Teachers"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"/>
+
+            <!-- 🔥 Teachers Count -->
+            <TextView
+                android:id="@+id/tvTotalTeachers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"/>
+        </LinearLayout>
+
+        <!-- ===== STUDENTS CARD ===== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:padding="20dp"
+            android:layout_marginTop="14dp"
+            android:background="@drawable/stat_card_orange">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total Students"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"/>
+
+            <!-- 🔥 Students Count -->
+            <TextView
+                android:id="@+id/tvTotalStudents"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
