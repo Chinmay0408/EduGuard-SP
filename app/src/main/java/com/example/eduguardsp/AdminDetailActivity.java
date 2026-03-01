@@ -42,39 +42,29 @@ public class AdminDetailActivity extends AppCompatActivity {
         loadStudentCount();
     }
 
-    private void loadFacultyCount(){
+    private void loadFacultyCount() {
+        teachersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                long count = snapshot.getChildrenCount();
+                tvFacultyCount.setText("Faculty: " + count);
+            }
 
-        teachersRef.orderByChild("collegeName")
-                .equalTo(collegeName)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                        long count = snapshot.getChildrenCount();
-                        tvFacultyCount.setText("Faculty: " + count);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {}
-                });
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
     }
 
-    private void loadStudentCount(){
+    private void loadStudentCount() {
+        studentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                long count = snapshot.getChildrenCount();
+                tvStudentCount.setText("Students: " + count);
+            }
 
-        studentsRef.orderByChild("collegeName")
-                .equalTo(collegeName)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                        long count = snapshot.getChildrenCount();
-                        tvStudentCount.setText("Students: " + count);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {}
-                });
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
     }
 }

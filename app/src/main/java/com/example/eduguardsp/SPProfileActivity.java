@@ -6,6 +6,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 
 public class SPProfileActivity extends AppCompatActivity {
@@ -13,66 +14,75 @@ public class SPProfileActivity extends AppCompatActivity {
     TextView tvAdminName, tvAdminEmail;
     TextView tvTotalColleges, tvTotalTeachers, tvTotalStudents;
 
-    DatabaseReference collegesRef, teachersRef, studentsRef;
+    DatabaseReference collegesRef, teachersRef, studentsRef, superAdminRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_profile); // 🔥 Make sure this matches your XML file name
+        setContentView(R.layout.activity_admin_profile);
 
-        // 🔥 Initialize Views
         tvAdminName = findViewById(R.id.tvAdminName);
         tvAdminEmail = findViewById(R.id.tvAdminEmail);
         tvTotalColleges = findViewById(R.id.tvTotalColleges);
         tvTotalTeachers = findViewById(R.id.tvTotalTeachers);
         tvTotalStudents = findViewById(R.id.tvTotalStudents);
 
+        collegesRef = FirebaseDatabase.getInstance().getReference("Admins");
+        teachersRef = FirebaseDatabase.getInstance().getReference("Teachers");
+        studentsRef = FirebaseDatabase.getInstance().getReference("Students");
+        superAdminRef = FirebaseDatabase.getInstance().getReference("SuperAdmins");
 
-        // 🔥 Firebase References (ONLY for statistics)
-        collegesRef = FirebaseDatabase.getInstance()
-                .getReference("Admins");
-
-        teachersRef = FirebaseDatabase.getInstance()
-                .getReference("Teachers");
-
-        studentsRef = FirebaseDatabase.getInstance()
-                .getReference("Students");
-
+        loadSuperAdminProfile();
         loadStatistics();
     }
 
-    private void loadStatistics(){
+    private void loadSuperAdminProfile() {
+        // Get current logged-in user's UID
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        // 🔥 Count Colleges
+        superAdminRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String name = snapshot.child("name").getValue(String.class);
+                    String email = snapshot.child("email").getValue(String.class);
+
+                    tvAdminName.setText(name != null ? name : "Unknown");
+                    tvAdminEmail.setText(email != null ? email : "No email");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+    }
+
+    private void loadStatistics() {
+
         collegesRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                long count = snapshot.getChildrenCount();
-                tvTotalColleges.setText(String.valueOf(count));
+                tvTotalColleges.setText(String.valueOf(snapshot.getChildrenCount()));
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
         });
 
-        // 🔥 Count Teachers
         teachersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                long count = snapshot.getChildrenCount();
-                tvTotalTeachers.setText(String.valueOf(count));
+                tvTotalTeachers.setText(String.valueOf(snapshot.getChildrenCount()));
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
         });
 
-        // 🔥 Count Students
         studentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                long count = snapshot.getChildrenCount();
-                tvTotalStudents.setText(String.valueOf(count));
+                tvTotalStudents.setText(String.valueOf(snapshot.getChildrenCount()));
             }
 
             @Override

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -27,66 +28,54 @@ public class SPAdminsFragment extends Fragment {
     ArrayList<Admin> adminList;
     FloatingActionButton fab;
     DatabaseReference adminRef;
+    TextView adminCountBadge; // 👈 added
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sp_admins, container, false);
 
         recyclerView = view.findViewById(R.id.adminRecycler);
-        recyclerView.setLayoutManager(
-                new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        adminCountBadge = view.findViewById(R.id.adminCountBadge); // 👈 added
 
         adminList = new ArrayList<>();
         adapter = new AdminAdapter(adminList, admin -> {
-
-            Intent intent = new Intent(
-                    getContext(),
-                    AdminDetailActivity.class);
-
+            Intent intent = new Intent(getContext(), AdminDetailActivity.class);
             intent.putExtra("name", admin.name);
             intent.putExtra("collegeName", admin.collegeName);
-
             startActivity(intent);
         });
 
-
         recyclerView.setAdapter(adapter);
 
-        adminRef = FirebaseDatabase.getInstance()
-                .getReference("Admins");
-
+        adminRef = FirebaseDatabase.getInstance().getReference("Admins");
         loadAdmin();
 
         fab = view.findViewById(R.id.fabAddAdmin);
-
-        fab.setOnClickListener(v -> {
-
-            startActivity(new Intent(
-                    getContext(),
-                    AddAdminActivity.class));
-
-        });
+        fab.setOnClickListener(v -> startActivity(new Intent(getContext(), AddAdminActivity.class)));
 
         return view;
     }
 
-    private void loadAdmin(){
-
+    private void loadAdmin() {
         adminRef.addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
                 adminList.clear();
 
-                for(DataSnapshot ds : snapshot.getChildren()){
-
+                for (DataSnapshot ds : snapshot.getChildren()) {
                     Admin admin = ds.getValue(Admin.class);
                     admin.uid = ds.getKey();
                     adminList.add(admin);
                 }
 
                 adapter.notifyDataSetChanged();
+
+                // 👇 update badge after list is loaded
+                int count = adminList.size();
+                adminCountBadge.setText(count + (count == 1 ? " Admin" : " Admins"));
             }
 
             @Override

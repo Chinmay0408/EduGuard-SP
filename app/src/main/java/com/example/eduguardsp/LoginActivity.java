@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -12,11 +13,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginActivity extends AppCompatActivity {
 
     EditText etEmail, etPassword;
     Button btnLogin;
+    TextView signupPage;
 
     FirebaseAuth mAuth;
 
@@ -28,8 +32,14 @@ public class LoginActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.email);
         etPassword = findViewById(R.id.password);
         btnLogin = findViewById(R.id.loginBtn);
+        signupPage = findViewById(R.id.signup_page);
 
         mAuth = FirebaseAuth.getInstance();
+
+        signupPage.setOnClickListener(v -> {
+            Intent i = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(i);
+        });
 
         btnLogin.setOnClickListener(v -> loginAdmin());
     }
@@ -44,43 +54,62 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // 🔥 Firebase Authentication
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
 
                     if (task.isSuccessful()) {
 
                         FirebaseUser user = mAuth.getCurrentUser();
+                        String uid = user.getUid();
 
-                        if (user != null &&
-                                user.getEmail().equals("superadmin12@gmail.com")) {
+                        DatabaseReference ref = FirebaseDatabase.getInstance()
+                                .getReference("SuperAdmins")
+                                .child(uid)
+                                .child("role");
 
-                            // ✅ Super Admin Login Successful
-                            Toast.makeText(this,
-                                    "Welcome Super Admin",
-                                    Toast.LENGTH_SHORT).show();
+                        ref.get().addOnSuccessListener(snapshot -> {
 
-                            Intent intent = new Intent(
-                                    LoginActivity.this,
-                                    SPMainActivity.class // 🔥 replace with your dashboard activity
-                            );
+                            if (snapshot.exists()) {
 
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                                    Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                String role = snapshot.getValue(String.class);
 
-                            startActivity(intent);
+                                if ("Super Admin".equals(role)) {
 
-                        } else {
-                            // ❌ Not Super Admin
-                            Toast.makeText(this,
-                                    "Access Denied",
-                                    Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(this,
+                                            "Welcome Super Admin",
+                                            Toast.LENGTH_SHORT).show();
 
-                            FirebaseAuth.getInstance().signOut();
-                        }
+                                    Intent intent = new Intent(
+                                            LoginActivity.this,
+                                            SPMainActivity.class
+                                    );
+
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                                            Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+                                    startActivity(intent);
+
+                                } else {
+
+                                    Toast.makeText(this,
+                                            "Access Denied",
+                                            Toast.LENGTH_SHORT).show();
+
+                                    FirebaseAuth.getInstance().signOut();
+                                }
+
+                            } else {
+
+                                Toast.makeText(this,
+                                        "No Role Found",
+                                        Toast.LENGTH_SHORT).show();
+
+                                FirebaseAuth.getInstance().signOut();
+                            }
+                        });
 
                     } else {
-                        // ❌ Wrong Credentials
+
                         Toast.makeText(this,
                                 "Invalid Email or Password",
                                 Toast.LENGTH_SHORT).show();

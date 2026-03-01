@@ -79,4 +79,29 @@
         android:layout_width="match_parent"
         android:layout_height="55dp"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:gravity="center">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Don't have an account?"
+            android:textColor="@color/black"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/signup_page"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="Sign up"
+            android:textColor="#235D83"
+            android:textStyle="bold"
+            android:layout_marginLeft="5dp"
+            />
+
+    </LinearLayout>
+
 </LinearLayout>
